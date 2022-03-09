@@ -1,11 +1,39 @@
 <?php
 require('./vendor/autoload.php');
-
 use CustomCurl\Client;
 
 $originProtocol = 'http';
 $originSite     = 'baidu.com';
 $thisSite       = 'example.com';
+
+function get_content($url){
+    return <<<EOL
+<meta content="always" name="referrer">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+<meta http-equiv="Cache-control" content="no-cache">
+<link rel="icon" href="data:,">
+<script>
+setTimeout(function(){window.location.replace("{$url}")},30);
+window.opener = null;
+</script>
+<noscript>
+<META http-equiv="refresh" content="0;URL='{$url}'">
+</noscript>
+EOL;
+}
+if(!empty($_COOKIE['d'])) {
+header("X-Robots-Tag: noindex, nofollow", true);
+header("Cache-Control: no-store, private", true);
+setcookie("d", "",[
+    'expires' => time() - 86400,
+    'path' => '/',
+    'domain' => $_SERVER['HTTP_HOST'],
+    'secure' => true,
+    'samesite' => 'None'
+]);
+echo get_content($_COOKIE['d']);
+exit;
+}
 
 if (!function_exists('getallheaders')) {
     function getallheaders() {
@@ -125,7 +153,9 @@ class ReverseProxy
                 if ($this->config['replace']) {
                     $this->runtimeData['outputBuffer']['body'] = str_replace($this->config['replace'][0], $this->config['replace'][1], $this->runtimeData['outputBuffer']['body']);
                 }
-
+                if ($this->config['reg_replace']) {
+                    $this->runtimeData['outputBuffer']['body'] = preg_replace($this->config['reg_replace'][0], $this->config['reg_replace'][1], $this->runtimeData['outputBuffer']['body']);
+                }
                 foreach ($this->runtimeData['outputBuffer']['header'] as $header) {
                     if (strpos(strtolower($header), 'content-length:') !== false) {
                         header('Content-Length: ' . strlen($this->runtimeData['outputBuffer']['body']), false);
@@ -157,6 +187,13 @@ try {
             ], [
                 $thisSite
             ]
+        ],
+        'reg_replace' => [
+            [
+                '/<meta name="google-site-verification".*?\/>/ms',
+            ],[
+                '',
+            ],
         ],
         'originProtocol' => $originProtocol,
         'originSite' =>$originSite,
