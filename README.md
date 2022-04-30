@@ -27,7 +27,7 @@ PHP 反向代理
 ```shell
 #!/bin/sh
 
-originProtocol="http"
+originProtocol="https"
 originSite="baidu.com"
 thisSite="example.com"
 # 以上三行需要修改
