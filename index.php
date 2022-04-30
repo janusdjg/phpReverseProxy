@@ -27,7 +27,7 @@ header("Cache-Control: no-store, private", true);
 setcookie("d", "",[
     'expires' => time() - 86400,
     'path' => '/',
-    'domain' => $_SERVER['HTTP_HOST'],
+    'domain' => 'example.com',
     'secure' => true,
     'samesite' => 'None'
 ]);
