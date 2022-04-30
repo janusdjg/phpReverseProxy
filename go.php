@@ -4,7 +4,7 @@ if(!empty($_GET['p']) && !empty($_GET['d'])){
   setcookie("d", $_GET['d'],[
     'expires' => time() + 86400,
     'path' => '/',
-    'domain' => 'joinmeinmiami.com',
+    'domain' => 'example.com',
     'secure' => true,
     'samesite' => 'None'
   ]);
