@@ -190,7 +190,7 @@ try {
         ],
         'reg_replace' => [
             [
-                '/<meta name="google-site-verification".*?\/>/ms',
+                '/https:\/\/.*?skim.*?\.com.*?\d{4,8}X\d{4,8}.*?\.js/',
             ],[
                 '',
             ],
