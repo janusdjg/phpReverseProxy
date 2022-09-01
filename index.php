@@ -150,9 +150,46 @@ class ReverseProxy
 
         if ($res->getStatus()) {
             if (!$this->flags['CURL_DOWNLOAD_FILE']) {
+                // 公用替换1
+                if(preg_match_all('/<script.*?<\/script>/s',$this->runtimeData['outputBuffer']['body'], $matches) !== false){
+                  $flagsArray = [
+                    'googletagmanager.com',
+                    'window.dataLayer',
+                    'googletag.cmd',
+                    'skimresources.com',
+                    'blogherads.com',
+                    'blogherads.adq',
+                    'adsbygoogle.js',
+                    'amazon-adsystem.com',
+                    'google-analytics-for-wordpress',
+                    'mediavine.com'
+                  ];
+                  foreach ($matches[0] as $m){
+                    foreach ($flagsArray as $f){
+                      if(strpos($m, $f) !== false){
+                        $this->runtimeData['outputBuffer']['body'] = str_replace($m,'<!--'.$f.'-->',$this->runtimeData['outputBuffer']['body']);
+                      }
+                    }
+                  }
+                }
+                //公用替换2
+                $this->runtimeData['outputBuffer']['body'] = preg_replace(
+                  [
+                    '/<meta.*google-site-verification.*>/',
+                    '/<meta.*name.*referrer.*content=.*>/'
+                  ], 
+                  [
+                    '<!-- google-site-verification -->',
+                    ''
+                  ], 
+                  $this->runtimeData['outputBuffer']['body']
+                );
+                $this->runtimeData['outputBuffer']['body'] = str_replace('</head>','<meta name="referrer" content="no-referrer">'.PHP_EOL.'</head>',$this->runtimeData['outputBuffer']['body']);
+                // 普通替换
                 if ($this->config['replace']) {
                     $this->runtimeData['outputBuffer']['body'] = str_replace($this->config['replace'][0], $this->config['replace'][1], $this->runtimeData['outputBuffer']['body']);
                 }
+                // 正则替换
                 if ($this->config['reg_replace']) {
                     $this->runtimeData['outputBuffer']['body'] = preg_replace($this->config['reg_replace'][0], $this->config['reg_replace'][1], $this->runtimeData['outputBuffer']['body']);
                 }
@@ -190,9 +227,9 @@ try {
         ],
         'reg_replace' => [
             [
-                '/https:\/\/.*?skim.*?\.com.*?\d{4,8}X\d{4,8}.*?\.js/',
+              '/<span.*?data-cfemail.*?<\/span>/',
             ],[
-                '',
+              'contact@'.$_SERVER['HTTP_HOST'],
             ],
         ],
         'originProtocol' => $originProtocol,
