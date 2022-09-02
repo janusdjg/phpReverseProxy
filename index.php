@@ -151,9 +151,11 @@ class ReverseProxy
         if ($res->getStatus()) {
             if (!$this->flags['CURL_DOWNLOAD_FILE']) {
                 // 公用替换1
+                $this->runtimeData['outputBuffer']['body'] = preg_replace('/<noscript>.*?<\/noscript>/s', '<!-- noscript tag-->', $this->runtimeData['outputBuffer']['body']);
                 if(preg_match_all('/<script.*?<\/script>/s',$this->runtimeData['outputBuffer']['body'], $matches) !== false){
                   $flagsArray = [
                     'googletagmanager.com',
+                    'google-analytics.com'
                     'window.dataLayer',
                     'googletag.cmd',
                     'skimresources.com',
@@ -162,7 +164,8 @@ class ReverseProxy
                     'adsbygoogle.js',
                     'amazon-adsystem.com',
                     'google-analytics-for-wordpress',
-                    'mediavine.com'
+                    'mediavine.com',
+                    'fbevents.js'
                   ];
                   foreach ($matches[0] as $m){
                     foreach ($flagsArray as $f){
