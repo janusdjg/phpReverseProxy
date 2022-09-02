@@ -175,8 +175,8 @@ class ReverseProxy
                 //公用替换2
                 $this->runtimeData['outputBuffer']['body'] = preg_replace(
                   [
-                    '/<meta.*google-site-verification.*>/',
-                    '/<meta.*name.*referrer.*content=.*>/'
+                    '/<meta.*google-site-verification.*?>/',
+                    '/<meta.*name.*referrer.*content=.*?>/'
                   ], 
                   [
                     '<!-- google-site-verification -->',
