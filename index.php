@@ -155,7 +155,7 @@ class ReverseProxy
                 if(preg_match_all('/<script.*?<\/script>/s',$this->runtimeData['outputBuffer']['body'], $matches) !== false){
                   $flagsArray = [
                     'googletagmanager.com',
-                    'google-analytics.com'
+                    'google-analytics.com',
                     'window.dataLayer',
                     'googletag.cmd',
                     'skimresources.com',
