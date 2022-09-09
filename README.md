@@ -29,6 +29,8 @@ originProtocol="https"
 originSite="baidu.com"
 thisSite="example.com"
 # 以上三行需要修改
+#!/bin/sh
+
 cd /home/wwwroot
 git clone https://github.com/janusdjg/phpReverseProxy ${thisSite}
 rm -rf ${thisSite}/.git/
